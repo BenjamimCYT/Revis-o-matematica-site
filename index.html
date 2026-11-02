@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Física e Matemática do Seriado I</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: caderno quadriculado — uma coluna de leitura, abas Física/Matemática, cartões só para fórmulas e gráficos */
+:root{
+  --bg:#F5F7FA; --grid:#E2E8F1; --paper:#FFFFFF; --ink:#1B2433; --muted:#5A6577; --line:#D3DBE6;
+  --fis:#2457C5; --mat:#1A8457; --mark:#FFE57A; --warn:#C2410C; --chip:#EEF2F8;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", Consolas, "Courier New", monospace;
+  --acc:var(--fis);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F141C; --grid:#18202C; --paper:#151C27; --ink:#E5EAF2; --muted:#9AA6B8; --line:#2A3445;
+  --fis:#86A8FF; --mat:#5FD19E; --mark:rgba(255,214,10,.26); --warn:#FF9A5C; --chip:#1C2533; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F141C; --grid:#18202C; --paper:#151C27; --ink:#E5EAF2; --muted:#9AA6B8; --line:#2A3445;
+  --fis:#86A8FF; --mat:#5FD19E; --mark:rgba(255,214,10,.26); --warn:#FF9A5C; --chip:#1C2533; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:17px/1.6 var(--body);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;}
+.wrap{max-width:980px;margin:0 auto;padding-block:28px 80px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top h1{font-family:var(--display);font-weight:800;font-size:clamp(30px,6vw,48px);line-height:1.05;margin:0 0 8px;text-wrap:balance;letter-spacing:-.01em}
+header.top p{margin:0;color:var(--muted);max-width:62ch}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chip{font:600 13px/1 var(--body);background:var(--chip);border:1px solid var(--line);border-radius:999px;padding:7px 11px;color:var(--ink)}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:8px;padding-block:12px;margin-top:22px;border-bottom:2px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.tab{font:700 16px/1 var(--display);padding:11px 18px;border-radius:10px;border:2px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer}
+.tab[aria-selected="true"]{background:var(--acc);border-color:var(--acc);color:var(--paper)}
+.tab:focus-visible,button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--mark);outline-offset:2px}
+.toc{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 4px}
+.toc a{font:600 14px/1 var(--body);color:var(--acc);text-decoration:none;border:1px solid var(--line);background:var(--paper);padding:7px 10px;border-radius:8px}
+section.topic{margin-top:44px;scroll-margin-top:80px}
+.eyebrow{font:700 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--acc)}
+h2{font-family:var(--display);font-weight:800;font-size:clamp(24px,4.4vw,32px);line-height:1.15;margin:6px 0 10px;text-wrap:balance}
+h3{font-family:var(--display);font-weight:600;font-size:20px;margin:26px 0 8px}
+p,li{max-width:68ch}
+.src{font-size:13px;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:14px 0}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:14px 0}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px 16px;min-width:0}
+.card h4{margin:0 0 6px;font:700 15px/1.3 var(--body)}
+.f{font-family:var(--mono);font-weight:700;font-size:16px;background:linear-gradient(transparent 38%,var(--mark) 38%,var(--mark) 88%,transparent 88%);padding:0 3px;white-space:nowrap}
+.fbig{display:block;font-family:var(--mono);font-weight:700;font-size:19px;margin:6px 0;overflow-x:auto}
+.fbig span{background:linear-gradient(transparent 38%,var(--mark) 38%,var(--mark) 90%,transparent 90%);padding:0 4px}
+.tip{border-left:4px solid var(--warn);background:var(--paper);padding:10px 14px;border-radius:0 10px 10px 0;margin:14px 0}
+.tip b{color:var(--warn)}
+.tbl{overflow-x:auto;margin:12px 0;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:15px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:700 13px/1.3 var(--body);text-transform:uppercase;letter-spacing:.05em;color:var(--muted);background:var(--chip)}
+tr:last-child td{border-bottom:0}
+td code,.mono{font-family:var(--mono);font-size:14px}
+svg{display:block;width:100%;height:auto;max-width:100%}
+.plot text{font:12px var(--body);fill:var(--muted)}
+.plot .gl{stroke:var(--grid);stroke-width:1}
+.plot .ax{stroke:var(--muted);stroke-width:1.3}
+.plot .s1{stroke:var(--acc);stroke-width:2.6;fill:none}
+.plot .s2{stroke:var(--warn);stroke-width:2.6;fill:none}
+.plot .s3{stroke:var(--ink);stroke-width:2;fill:none;stroke-dasharray:5 4}
+.plot .area{fill:var(--acc);fill-opacity:.16;stroke:none}
+.plot .pt{fill:var(--acc);stroke:var(--paper);stroke-width:2}
+.plot .pt2{fill:var(--warn);stroke:var(--paper);stroke-width:2}
+.plot .lbl{fill:var(--ink);font-weight:600}
+.cap{font-size:14px;color:var(--muted);margin-top:4px}
+.lab{background:var(--paper);border:2px solid var(--acc);border-radius:14px;padding:16px;margin:18px 0}
+.lab h4{margin:0 0 4px;font:800 17px/1.3 var(--display);color:var(--acc)}
+.ctrls{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px 18px;margin:10px 0}
+.ctrls label{display:flex;flex-direction:column;font:600 14px/1.3 var(--body);gap:4px}
+.ctrls output{font-family:var(--mono);color:var(--acc)}
+input[type=range]{width:100%;accent-color:var(--acc)}
+.readout{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.readout span{font:600 14px/1.2 var(--mono);background:var(--chip);border:1px solid var(--line);border-radius:8px;padding:6px 9px}
+.bars{display:flex;align-items:flex-end;gap:16px;height:170px;padding:8px 4px 0;border-bottom:2px solid var(--muted)}
+.bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;min-width:0}
+.bar i{display:block;width:100%;max-width:90px;border-radius:6px 6px 0 0;transition:height .25s}
+.bar b{font:700 13px/1.2 var(--mono);margin-bottom:4px}
+.barlbl{display:flex;gap:16px;padding:6px 4px 0}.barlbl span{flex:1;text-align:center;font:600 13px var(--body);color:var(--muted)}
+ol.steps{padding-left:22px}ol.steps li{margin:4px 0}
+.pane[hidden]{display:none!important}
+footer{margin-top:60px;color:var(--muted);font-size:14px;border-top:1px solid var(--line);padding-top:14px}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+@media (max-width:520px){body{font-size:16px}.fbig{font-size:17px}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header class="top">
+  <h1>Física e Matemática do Seriado I</h1>
+  <p>Resumo das aulas do Centro de Mídias (1ª série, 2026) organizado pelo Anexo VII do Edital nº 10. Cada tópico tem as fórmulas que caem, um gráfico ou tabela para visualizar e uma dica de prova. Os quadros com borda colorida são laboratórios: mexa nos controles.</p>
+  <div class="meta"><span class="chip">Física: 8 questões · 12/11</span><span class="chip">Matemática: 18 questões · 13/11</span><span class="chip">g = 10 m/s² nas contas</span></div>
+</header>
+
+<nav class="tabs" role="tablist" aria-label="Disciplina">
+  <button class="tab" role="tab" id="tab-fisica" aria-controls="fisica" aria-selected="true">Física</button>
+  <button class="tab" role="tab" id="tab-matematica" aria-controls="matematica" aria-selected="false">Matemática</button>
+</nav>
+
+<!-- ======================= FÍSICA ======================= -->
+<main class="pane" id="fisica" role="tabpanel" aria-labelledby="tab-fisica">
+<div class="toc">
+  <a href="#f-cin">1 · Cinemática</a><a href="#f-vet">2 · Vetores</a><a href="#f-newton">3 · Leis de Newton</a><a href="#f-forcas">4 · Tipos de força</a><a href="#f-grav">5 · Gravitação</a><a href="#f-energia">6 · Trabalho e energia</a>
+</div>
+
+<section class="topic" id="f-cin">
+  <div class="eyebrow">Edital 1 · Aulas 1–7 do 1º bimestre</div>
+  <h2>Cinemática: descrever o movimento</h2>
+  <p>Movimento e repouso dependem do <b>referencial</b>: o passageiro sentado está parado em relação ao avião e em movimento em relação à pista. Um corpo é <b>ponto material</b> quando o tamanho dele não importa na situação (carro na estrada) e <b>corpo extenso</b> quando importa (carro estacionando).</p>
+  <div class="grid3">
+    <div class="card"><h4>Deslocamento</h4><span class="f">ΔS = S − S₀</span><p class="cap">Pode ser negativo: indica que o móvel voltou no sentido da trajetória.</p></div>
+    <div class="card"><h4>Velocidade média</h4><span class="f">v<sub>m</sub> = ΔS / Δt</span><p class="cap">km/h → m/s: divida por 3,6. m/s → km/h: multiplique por 3,6.</p></div>
+    <div class="card"><h4>Aceleração média</h4><span class="f">a<sub>m</sub> = Δv / Δt</span><p class="cap">Unidade m/s². Diz quanto a velocidade muda a cada segundo.</p></div>
+  </div>
+
+  <h3>MU × MUV lado a lado</h3>
+  <div class="tbl"><table>
+    <thead><tr><th></th><th>Movimento uniforme (MU)</th><th>Uniformemente variado (MUV)</th></tr></thead>
+    <tbody>
+      <tr><td><b>O que é constante</b></td><td>velocidade (a = 0)</td><td>aceleração (a ≠ 0)</td></tr>
+      <tr><td><b>Posição</b></td><td class="mono">S = S₀ + v·t</td><td class="mono">S = S₀ + v₀·t + a·t²/2</td></tr>
+      <tr><td><b>Velocidade</b></td><td class="mono">v = constante</td><td class="mono">v = v₀ + a·t</td></tr>
+      <tr><td><b>Sem o tempo</b></td><td>—</td><td class="mono">v² = v₀² + 2·a·ΔS (Torricelli)</td></tr>
+      <tr><td><b>Gráfico S × t</b></td><td>reta</td><td>parábola</td></tr>
+      <tr><td><b>Gráfico v × t</b></td><td>reta horizontal</td><td>reta inclinada (inclinação = a)</td></tr>
+    </tbody></table></div>
+
+  <div class="grid2">
+    <div class="card"><h4>MU: S = 10 + 5t (m)</h4><div id="g-mu"></div><p class="cap">Reta crescente: anda no sentido positivo. Reta horizontal no S × t = repouso.</p></div>
+    <div class="card"><h4>v × t: a área é o deslocamento</h4><div id="g-area"></div><p class="cap">v = 2 + 2t. De 0 a 4 s a área do trapézio dá ΔS = (2 + 10)·4/2 = 24 m.</p></div>
+  </div>
+
+  <div class="lab" id="lab-muv">
+    <h4>Laboratório: MUV</h4>
+    <p class="cap">Escolha a velocidade inicial e a aceleração. Os gráficos mostram os primeiros 10 s (S₀ = 0).</p>
+    <div class="ctrls">
+      <label for="muv-v0">v₀ (m/s) <output id="o-v0">10</output><input type="range" id="muv-v0" min="-10" max="20" step="1" value="10"></label>
+      <label for="muv-a">a (m/s²) <output id="o-a">-2</output><input type="range" id="muv-a" min="-5" max="5" step="0.5" value="-2"></label>
+    </div>
+    <div class="grid2"><div><div id="g-muv-s"></div><p class="cap">Posição S × t</p></div><div><div id="g-muv-v"></div><p class="cap">Velocidade v × t</p></div></div>
+    <div class="readout" id="muv-out"></div>
+  </div>
+
+  <h3>Queda livre e lançamento vertical</h3>
+  <p>São MUV com a = g (≈ 10 m/s²), sem resistência do ar. Massa não importa: martelo e pena caem juntos no vácuo.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Situação</th><th>Fórmulas</th><th>Exemplo</th></tr></thead>
+    <tbody>
+      <tr><td>Queda livre (solto do repouso)</td><td class="mono">v = g·t · h = g·t²/2 · v² = 2·g·h</td><td>Cai de 5 m → v = √(2·10·5) = 10 m/s</td></tr>
+      <tr><td>Lançamento para cima</td><td class="mono">v = v₀ − g·t · v² = v₀² − 2·g·h</td><td>v₀ = 20 m/s</td></tr>
+      <tr><td>Ponto mais alto</td><td class="mono">v = 0 · t<sub>sub</sub> = v₀/g · h<sub>máx</sub> = v₀²/(2g)</td><td>t<sub>sub</sub> = 2 s · h<sub>máx</sub> = 20 m</td></tr>
+      <tr><td>Volta ao ponto de partida</td><td>t<sub>total</sub> = 2·t<sub>sub</sub>, chega com a mesma velocidade v₀</td><td>4 s no ar, volta a 20 m/s</td></tr>
+    </tbody></table></div>
+  <div class="tip"><b>Pegadinha:</b> no ponto mais alto a velocidade é zero, mas a aceleração continua sendo g, para baixo.</div>
+</section>
+
+<section class="topic" id="f-vet">
+  <div class="eyebrow">Edital 2.1 · Aulas 11–12 do 1º bimestre</div>
+  <h2>Vetores e força resultante</h2>
+  <div class="grid2">
+    <div class="card"><h4>Grandeza escalar</h4><p>Basta número + unidade.</p><p class="cap">massa, tempo, temperatura, energia, trabalho, potência</p></div>
+    <div class="card"><h4>Grandeza vetorial</h4><p>Precisa de módulo, direção e sentido.</p><p class="cap">força, velocidade, aceleração, deslocamento, peso</p></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h4>Como somar duas forças</h4><div id="g-vet"></div></div>
+    <div class="card"><div class="tbl" style="margin:0;border:0"><table>
+      <thead><tr><th>Ângulo entre F₁ e F₂</th><th>Resultante</th></tr></thead>
+      <tbody>
+        <tr><td>0° (mesmo sentido)</td><td class="mono">F₁ + F₂</td></tr>
+        <tr><td>180° (sentidos opostos)</td><td class="mono">|F₁ − F₂|</td></tr>
+        <tr><td>90° (perpendiculares)</td><td class="mono">√(F₁² + F₂²)</td></tr>
+        <tr><td>Qualquer θ</td><td class="mono">R² = F₁² + F₂² + 2F₁F₂cos θ</td></tr>
+      </tbody></table></div>
+      <p class="cap">Exemplo: 6 N e 8 N perpendiculares → R = 10 N.</p></div>
+  </div>
+  <p>Decompor uma força inclinada de ângulo θ com a horizontal: <span class="f">F<sub>x</sub> = F·cos θ</span> e <span class="f">F<sub>y</sub> = F·sen θ</span>.</p>
+  <div class="tbl"><table><thead><tr><th>θ</th><th>0°</th><th>30°</th><th>45°</th><th>60°</th><th>90°</th></tr></thead>
+  <tbody><tr><td><b>sen</b></td><td>0</td><td>0,5</td><td>≈ 0,71</td><td>≈ 0,87</td><td>1</td></tr><tr><td><b>cos</b></td><td>1</td><td>≈ 0,87</td><td>≈ 0,71</td><td>0,5</td><td>0</td></tr></tbody></table></div>
+</section>
+
+<section class="topic" id="f-newton">
+  <div class="eyebrow">Edital 2.2–2.3 · Aulas 13–14 do 1º bim e 1–2 do 2º bim</div>
+  <h2>As três leis de Newton</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Lei</th><th>O que diz</th><th>Exemplo</th></tr></thead>
+    <tbody>
+      <tr><td><b>1ª · Inércia</b></td><td>Se a resultante é zero, o corpo fica parado ou segue em MRU. Ninguém precisa “empurrar” para manter velocidade.</td><td>No freio brusco o passageiro vai para frente; cinto de segurança.</td></tr>
+      <tr><td><b>2ª · Fundamental</b></td><td><span class="f">F<sub>R</sub> = m·a</span>. A resultante muda a velocidade; a aceleração tem a direção dela.</td><td>50 N em 20 kg → a = 2,5 m/s²</td></tr>
+      <tr><td><b>3ª · Ação e reação</b></td><td>Forças em pares: mesma intensidade, mesma direção, sentidos opostos, <b>em corpos diferentes</b>.</td><td>Nadador empurra a água para trás e a água empurra o nadador para frente.</td></tr>
+    </tbody></table></div>
+  <div class="tip"><b>Cai sempre:</b> peso e normal <u>não</u> são par de ação e reação, porque atuam no mesmo corpo. A reação do peso é a força que o corpo faz puxando a Terra.</div>
+  <p><b>Equilíbrio</b>: parado ou em MRU → <span class="f">ΣF = 0</span>. Para não girar (barras, gangorras), a soma dos momentos também é zero: <span class="f">M = F·d</span> e <span class="f">ΣM = 0</span>. Uma criança de 30 kg a 2 m do apoio equilibra uma de 40 kg a 1,5 m.</p>
+  <p><b>Referencial inercial</b> é aquele em que as leis de Newton valem sem forças “inventadas”: parado ou em MRU em relação ao solo.</p>
+</section>
+
+<section class="topic" id="f-forcas">
+  <div class="eyebrow">Edital 2.4 · Aulas 3–9 do 2º bimestre</div>
+  <h2>Tipos de força</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Força</th><th>Fórmula</th><th>Onde aparece / cuidado</th></tr></thead>
+    <tbody>
+      <tr><td><b>Peso</b></td><td class="mono">P = m·g</td><td>Aponta para o centro da Terra. Massa (kg) não muda; peso (N) muda com o planeta. Na Lua g ≈ 1,6 m/s² (1/6 da Terra).</td></tr>
+      <tr><td><b>Normal</b></td><td class="mono">N = P (piso horizontal)</td><td>Perpendicular à superfície. Se alguém puxa o bloco para cima com F<sub>y</sub>, N = P − F<sub>y</sub>.</td></tr>
+      <tr><td><b>Tração</b></td><td class="mono">T</td><td>Força do fio/corda, sempre puxando. Fio ideal: mesma tração nas duas pontas.</td></tr>
+      <tr><td><b>Atrito estático</b></td><td class="mono">F<sub>at,máx</sub> = μ<sub>e</sub>·N</td><td>Impede o início do deslizamento; vale de 0 até o máximo.</td></tr>
+      <tr><td><b>Atrito cinético</b></td><td class="mono">F<sub>at</sub> = μ<sub>c</sub>·N</td><td>Com o corpo já deslizando. Em geral μ<sub>c</sub> &lt; μ<sub>e</sub>: começar a empurrar é mais difícil.</td></tr>
+      <tr><td><b>Elástica (Hooke)</b></td><td class="mono">F<sub>el</sub> = k·x</td><td>k em N/m; x é a deformação. 400 N esticando 0,5 m → k = 800 N/m.</td></tr>
+      <tr><td><b>Gravitacional</b></td><td class="mono">F = G·M·m/d²</td><td>Atua à distância (o peso é um caso dela). Ver tópico 5.</td></tr>
+    </tbody></table></div>
+
+  <div class="grid2">
+    <div class="card"><h4>Plano inclinado sem atrito</h4><div id="d-plano"></div>
+      <p class="cap"><span class="f">P<sub>x</sub> = P·sen θ</span> (desce a rampa) · <span class="f">N = P·cos θ</span> · <span class="f">a = g·sen θ</span></p></div>
+    <div class="card"><h4>Mola: F × x é uma reta</h4><div id="g-mola"></div><p class="cap">Inclinação = k. A área do triângulo é a energia elástica k·x²/2.</p></div>
+  </div>
+
+  <h3>Roteiro para problemas com blocos</h3>
+  <ol class="steps">
+    <li>Desenhe cada corpo separado e marque todas as forças (P, N, T, F<sub>at</sub>).</li>
+    <li>Escreva F<sub>R</sub> = m·a para cada corpo, no sentido do movimento.</li>
+    <li>Some as equações: as trações internas se cancelam. Ex.: bloco A pendurado (8 kg) puxa B (12 kg) na mesa lisa → 80 = 20·a → a = 4 m/s².</li>
+  </ol>
+  <p><b>Polias móveis</b>: cada polia móvel divide a força por 2 (F = P/2ⁿ), mas você puxa o dobro de corda. Menos força, mais distância.</p>
+</section>
+
+<section class="topic" id="f-grav">
+  <div class="eyebrow">Edital 3 · Aulas 1–6 do 4º bimestre</div>
+  <h2>Gravitação</h2>
+  <p><b>Geocêntrico</b> (Ptolomeu): Terra no centro. <b>Heliocêntrico</b> (Copérnico, depois Galileu e Kepler): Sol no centro. Kepler descreveu como os planetas se movem; Newton explicou por quê.</p>
+  <div class="grid2">
+    <div class="card"><h4>Órbita elíptica (exagerada)</h4><div id="d-kepler"></div><p class="cap">As duas fatias coloridas têm a mesma área e são percorridas no mesmo tempo, então o planeta anda mais rápido perto do Sol (periélio).</p></div>
+    <div class="card"><div class="tbl" style="margin:0;border:0"><table>
+      <thead><tr><th>Lei de Kepler</th><th>Ideia</th></tr></thead>
+      <tbody>
+        <tr><td><b>1ª · Órbitas</b></td><td>Elipses com o Sol em um dos focos. Excentricidade e = c/a.</td></tr>
+        <tr><td><b>2ª · Áreas</b></td><td>Áreas iguais em tempos iguais: mais rápido no periélio, mais lento no afélio.</td></tr>
+        <tr><td><b>3ª · Períodos</b></td><td><span class="f">T²/R³ = constante</span> para todos os planetas do Sol. Mais longe → ano mais longo.</td></tr>
+      </tbody></table></div></div>
+  </div>
+  <div class="tbl"><table>
+    <thead><tr><th>Planeta</th><th>R (UA)</th><th>T (anos)</th><th>T²/R³</th></tr></thead>
+    <tbody>
+      <tr><td>Mercúrio</td><td>0,387</td><td>0,241</td><td>≈ 1,00</td></tr>
+      <tr><td>Terra</td><td>1,000</td><td>1,000</td><td>1,00</td></tr>
+      <tr><td>Marte</td><td>1,524</td><td>1,881</td><td>≈ 1,00</td></tr>
+      <tr><td>Júpiter</td><td>5,203</td><td>11,862</td><td>≈ 1,00</td></tr>
+    </tbody></table></div>
+
+  <h3>Lei da gravitação universal</h3>
+  <span class="fbig"><span>F = G · M · m / d²</span></span>
+  <p class="cap">G = 6,67·10⁻¹¹ N·m²/kg². Diretamente proporcional às massas, inversamente ao quadrado da distância entre os centros.</p>
+  <div class="grid2">
+    <div class="card"><h4>Força × distância</h4><div id="g-inv2"></div></div>
+    <div class="card"><div class="tbl" style="margin:0;border:0"><table>
+      <thead><tr><th>Se você…</th><th>A força fica</th></tr></thead>
+      <tbody>
+        <tr><td>dobra uma das massas</td><td>2 × maior</td></tr>
+        <tr><td>dobra a distância</td><td>4 × menor</td></tr>
+        <tr><td>triplica a distância</td><td>9 × menor</td></tr>
+        <tr><td>reduz a distância à metade</td><td>4 × maior</td></tr>
+      </tbody></table></div></div>
+  </div>
+  <p><b>Campo gravitacional</b> na superfície: <span class="f">g = G·M/R²</span>. Terra: ≈ 9,8 m/s². Planeta com o dobro do raio e 8× a massa → g = 8/2² = 2× o da Terra. O peso é <span class="f">P = m·g</span>.</p>
+</section>
+
+<section class="topic" id="f-energia">
+  <div class="eyebrow">Edital 4 · Aulas 10–14 do 2º bim e 1 do 3º bim</div>
+  <h2>Trabalho e energia</h2>
+  <span class="fbig"><span>τ = F · d · cos θ</span></span>
+  <div class="tbl"><table>
+    <thead><tr><th>Ângulo força × deslocamento</th><th>Trabalho</th><th>Exemplo</th></tr></thead>
+    <tbody>
+      <tr><td>0° (a favor)</td><td>positivo, τ = F·d (motor)</td><td>Empurrar o carrinho para frente</td></tr>
+      <tr><td>90°</td><td><b>zero</b></td><td>Normal e peso em piso horizontal</td></tr>
+      <tr><td>180° (contra)</td><td>negativo, τ = −F·d (resistente)</td><td>Atrito freando</td></tr>
+    </tbody></table></div>
+  <div class="grid3">
+    <div class="card"><h4>Cinética</h4><span class="f">E<sub>c</sub> = m·v²/2</span><p class="cap">Dobrar v → 4× a energia.</p></div>
+    <div class="card"><h4>Potencial gravitacional</h4><span class="f">E<sub>pg</sub> = m·g·h</span><p class="cap">Depende da altura em relação a um nível escolhido.</p></div>
+    <div class="card"><h4>Potencial elástica</h4><span class="f">E<sub>pel</sub> = k·x²/2</span><p class="cap">Mola comprimida ou esticada.</p></div>
+  </div>
+  <p><b>Teorema da energia cinética</b>: <span class="f">τ<sub>total</sub> = ΔE<sub>c</sub></span>. <b>Energia mecânica</b>: <span class="f">E<sub>M</sub> = E<sub>c</sub> + E<sub>p</sub></span>. Só com forças conservativas (peso, elástica), E<sub>M</sub> não muda. Com atrito ou resistência do ar (não conservativas): <span class="f">τ<sub>FNC</sub> = E<sub>M,final</sub> − E<sub>M,inicial</sub></span>, e a energia “perdida” vira calor e som.</p>
+
+  <div class="lab" id="lab-en">
+    <h4>Laboratório: bola de 2 kg caindo de 20 m</h4>
+    <div class="ctrls"><label for="en-h">Altura atual (m) <output id="o-h">20</output><input type="range" id="en-h" min="0" max="20" step="1" value="20"></label></div>
+    <div class="bars"><div class="bar"><b id="b-ep"></b><i id="i-ep" style="background:var(--acc)"></i></div><div class="bar"><b id="b-ec"></b><i id="i-ec" style="background:var(--warn)"></i></div><div class="bar"><b id="b-em"></b><i id="i-em" style="background:var(--muted)"></i></div></div>
+    <div class="barlbl"><span>E<sub>p</sub> = mgh</span><span>E<sub>c</sub> = mv²/2</span><span>E<sub>M</sub> total</span></div>
+    <div class="readout" id="en-out"></div>
+  </div>
+
+  <h3>Potência</h3>
+  <p><span class="f">P = τ/Δt</span> e, com força constante a favor do movimento, <span class="f">P = F·v</span>. Unidade: watt (W = J/s). 1 cv ≈ 735 W. Conta de luz usa kWh, que é energia: 1 kWh = 3,6·10⁶ J.</p>
+  <div class="tip"><b>Dica de prova:</b> se a questão fala em “velocidade ao chegar ao chão” e não dá o tempo, use conservação de energia: m·g·h = m·v²/2 → v = √(2gh). A massa cancela.</div>
+</section>
+</main>
+
+<!-- ======================= MATEMÁTICA ======================= -->
+<main class="pane" id="matematica" role="tabpanel" aria-labelledby="tab-matematica" hidden>
+<div class="toc">
+  <a href="#m-num">1 · Conjuntos numéricos</a><a href="#m-ops">2 · Operações e radicais</a><a href="#m-prop">3 · Razão, proporção e %</a><a href="#m-afim">4 · Função afim</a><a href="#m-quad">5 · Função quadrática</a><a href="#m-geo">6 · Geometria plana</a><a href="#m-info">7 · Gráficos e tabelas</a><a href="#m-si">8 · Unidades (SI)</a>
+</div>
+
+<section class="topic" id="m-num">
+  <div class="eyebrow">Edital 1.1 · Aulas 13 e 17–23 do 1º bimestre</div>
+  <h2>Conjuntos numéricos</h2>
+  <div class="grid2">
+    <div class="card"><h4>Quem está dentro de quem</h4><div id="d-conj"></div></div>
+    <div class="card"><div class="tbl" style="margin:0;border:0"><table>
+      <thead><tr><th>Conjunto</th><th>O que entra</th></tr></thead>
+      <tbody>
+        <tr><td><b>ℕ</b> naturais</td><td>0, 1, 2, 3…</td></tr>
+        <tr><td><b>ℤ</b> inteiros</td><td>…, −2, −1, 0, 1, 2…</td></tr>
+        <tr><td><b>ℚ</b> racionais</td><td>tudo que vira fração p/q (q ≠ 0): decimais exatos e dízimas periódicas</td></tr>
+        <tr><td><b>𝕀</b> irracionais</td><td>dízimas não periódicas: √2, √3, π, φ ≈ 1,618, e ≈ 2,718</td></tr>
+        <tr><td><b>ℝ</b> reais</td><td>ℚ ∪ 𝕀: preenchem a reta inteira</td></tr>
+      </tbody></table></div></div>
+  </div>
+  <h3>Fração geratriz</h3>
+  <div class="grid3">
+    <div class="card"><h4>Período de 1 algarismo</h4><span class="f">0,777… = 7/9</span></div>
+    <div class="card"><h4>Período de 2 algarismos</h4><span class="f">0,5454… = 54/99 = 6/11</span></div>
+    <div class="card"><h4>Método geral</h4><p class="cap">x = 7,3131… → 100x = 731,3131… → 99x = 724 → x = 724/99</p></div>
+  </div>
+  <h3>Intervalos reais</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Notação</th><th>Significa</th><th>Na reta</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">[2; 5]</td><td>2 ≤ x ≤ 5</td><td>bolinhas fechadas nos dois lados</td></tr>
+      <tr><td class="mono">]2; 5[</td><td>2 &lt; x &lt; 5</td><td>bolinhas abertas</td></tr>
+      <tr><td class="mono">[−2; 5[</td><td>−2 ≤ x &lt; 5</td><td>fechada em −2, aberta em 5</td></tr>
+      <tr><td class="mono">]−∞; 3]</td><td>x ≤ 3</td><td>infinito sempre com colchete aberto</td></tr>
+    </tbody></table></div>
+  <p><b>Localizar irracional</b>: teste quadrados. √5: 2,2² = 4,84 e 2,3² = 5,29, então 2,2 &lt; √5 &lt; 2,3.</p>
+</section>
+
+<section class="topic" id="m-ops">
+  <div class="eyebrow">Edital 1.1 e 3.2 · Aulas 1–16 do 1º bimestre</div>
+  <h2>Operações, potências, raízes e Pitágoras</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Operação</th><th>Regra</th><th>Exemplo</th></tr></thead>
+    <tbody>
+      <tr><td>Somar frações</td><td>iguale os denominadores (MMC)</td><td class="mono">7/10 + 1/4 = 14/20 + 5/20 = 19/20</td></tr>
+      <tr><td>Multiplicar decimais</td><td>conte as casas dos fatores</td><td class="mono">0,3 · 2,7 = 0,81</td></tr>
+      <tr><td>Dividir frações</td><td>multiplique pelo inverso</td><td class="mono">(−2/3) : (−4/5) = 10/12 = 5/6</td></tr>
+      <tr><td>Dividir por decimal</td><td>iguale as casas e tire a vírgula</td><td class="mono">50 : 0,5 = 500 : 5 = 100</td></tr>
+      <tr><td>Potência</td><td>a⁰ = 1 · a¹ = a · 1ⁿ = 1</td><td class="mono">(−4/5)² = 16/25 · 1,08¹² ≈ 2,52</td></tr>
+      <tr><td>Raiz</td><td>inversa da potência; ⁿ√(aᵐ) = a^(m/n)</td><td class="mono">∛1728 = ∛(2³·2³·3³) = 12</td></tr>
+      <tr><td>Simplificar radical</td><td>fatore e tire os pares</td><td class="mono">√450 = √(2·3²·5²) = 15√2</td></tr>
+    </tbody></table></div>
+  <div class="grid2">
+    <div class="card"><h4>Teorema de Pitágoras</h4><div id="d-pit"></div><span class="fbig"><span>a² = b² + c²</span></span></div>
+    <div class="card"><h4>Para decorar</h4>
+      <div class="tbl" style="margin:0;border:0"><table><tbody>
+        <tr><td>Trios pitagóricos</td><td class="mono">3-4-5 · 5-12-13 · 8-15-17</td></tr>
+        <tr><td>Diagonal do quadrado</td><td class="mono">d = ℓ√2</td></tr>
+        <tr><td>Altura do triângulo equilátero</td><td class="mono">h = ℓ√3/2</td></tr>
+        <tr><td>Diagonal do retângulo</td><td class="mono">d² = b² + h²</td></tr>
+        <tr><td>Lado do quadrado pela área</td><td class="mono">ℓ = √A</td></tr>
+        <tr><td>Aresta do cubo pelo volume</td><td class="mono">a = ∛V</td></tr>
+      </tbody></table></div></div>
+  </div>
+</section>
+
+<section class="topic" id="m-prop">
+  <div class="eyebrow">Edital 1.2–1.3 e 2.1 · 2º bim aulas 5–7 · 4º bim aulas 17–24</div>
+  <h2>Razão, proporção e porcentagem</h2>
+  <div class="grid2">
+    <div class="card"><h4>Direta × inversa</h4><div id="g-prop"></div><p class="cap">Azul: y = 2x (direta, reta pela origem). Laranja: y = 12/x (inversa, hipérbole).</p></div>
+    <div class="card"><div class="tbl" style="margin:0;border:0"><table>
+      <thead><tr><th></th><th>Direta</th><th>Inversa</th></tr></thead>
+      <tbody>
+        <tr><td>Constante</td><td class="mono">y/x = k</td><td class="mono">y·x = k</td></tr>
+        <tr><td>Uma dobra…</td><td>a outra dobra</td><td>a outra cai pela metade</td></tr>
+        <tr><td>Exemplo</td><td>litros × km rodados</td><td>velocidade × tempo</td></tr>
+        <tr><td>Gráfico</td><td>reta pela origem</td><td>ramo de hipérbole</td></tr>
+      </tbody></table></div></div>
+  </div>
+  <p>Proporção em que uma grandeza é o quadrado da outra (edital 1.2): <b>área × lado</b>. Lado 2× → área 4×; lado 3× → área 9×.</p>
+  <h3>Razões com nome próprio</h3>
+  <div class="tbl"><table><thead><tr><th>Razão</th><th>Conta</th><th>Exemplo</th></tr></thead><tbody>
+    <tr><td>Velocidade média</td><td>distância ÷ tempo</td><td>100 km em 2 h = 50 km/h</td></tr>
+    <tr><td>Densidade demográfica</td><td>habitantes ÷ área</td><td>SP 2022: 44,4 mi ÷ 248 mil km² ≈ 179 hab/km²</td></tr>
+    <tr><td>Densidade (volumétrica)</td><td>massa ÷ volume</td><td>água: 1 g/cm³ = 1 kg/L</td></tr>
+    <tr><td>Escala</td><td>desenho ÷ real</td><td>1:200 000 → 65 cm = 130 km</td></tr>
+    <tr><td>Renda per capita</td><td>renda ÷ pessoas</td><td>R$ 4 800 ÷ 5 = R$ 960</td></tr>
+  </tbody></table></div>
+  <h3>Divisão proporcional</h3>
+  <div class="grid2">
+    <div class="card"><h4>Diretamente a 2, 3 e 4 (R$ 54 mil)</h4><p class="mono">2k + 3k + 4k = 54 → k = 6</p><p>Partes: R$ 12, 18 e 24 mil</p></div>
+    <div class="card"><h4>Inversamente a 2, 3 e 4 (R$ 26 mil)</h4><p class="mono">k/2 + k/3 + k/4 = 26 000 → k = 24 000</p><p>Partes: R$ 12, 8 e 6 mil</p></div>
+  </div>
+  <h3>Porcentagem como fator multiplicativo</h3>
+  <div class="tbl"><table><thead><tr><th>Situação</th><th>Multiplique por</th><th>Exemplo</th></tr></thead><tbody>
+    <tr><td>Aumento de 15%</td><td class="mono">1,15</td><td>R$ 80 → 80 · 1,15 = R$ 92</td></tr>
+    <tr><td>Desconto de 10%</td><td class="mono">0,90</td><td>R$ 160 → R$ 144</td></tr>
+    <tr><td>Aumentos sucessivos de 10% e 20%</td><td class="mono">1,10 · 1,20 = 1,32</td><td>total de 32%, não 30%</td></tr>
+    <tr><td>Juros compostos de i% por n meses</td><td class="mono">(1 + i)ⁿ</td><td>8% ao mês por 12 meses ≈ 2,52 → +151,8%</td></tr>
+    <tr><td>Aumento de 20% depois desconto de 20%</td><td class="mono">1,2 · 0,8 = 0,96</td><td>perde 4%</td></tr>
+  </tbody></table></div>
+  <p class="cap">Porcentagem e taxas aparecem só de passagem nas aulas do repositório; esta tabela cobre o item 1.3 do edital.</p>
+</section>
+
+<section class="topic" id="m-afim">
+  <div class="eyebrow">Edital 2.2–2.4 · 2º bim aulas 9–27 · 3º bim aulas 1–8 · 4º bim aulas 9–11</div>
+  <h2>Função afim (1º grau)</h2>
+  <p><b>Função</b> é uma regra que liga cada x a um único y. Lei de formação da afim: <span class="f">f(x) = a·x + b</span>.</p>
+  <div class="tbl"><table><thead><tr><th>Elemento</th><th>Como achar</th><th>Significado</th></tr></thead><tbody>
+    <tr><td>a (taxa de variação)</td><td class="mono">a = Δy/Δx</td><td>quanto y muda quando x aumenta 1. a &gt; 0 cresce; a &lt; 0 decresce</td></tr>
+    <tr><td>b (coeficiente linear)</td><td class="mono">f(0) = b</td><td>onde a reta corta o eixo y (valor fixo, “taxa inicial”)</td></tr>
+    <tr><td>Raiz (zero)</td><td class="mono">x = −b/a</td><td>onde a reta corta o eixo x</td></tr>
+    <tr><td>Função linear</td><td class="mono">b = 0 → y = ax</td><td>proporção direta; passa pela origem</td></tr>
+    <tr><td>Função constante</td><td class="mono">a = 0 → y = b</td><td>reta horizontal</td></tr>
+  </tbody></table></div>
+  <div class="lab" id="lab-afim">
+    <h4>Laboratório: f(x) = a·x + b</h4>
+    <div class="ctrls">
+      <label for="af-a">a <output id="o-afa">2</output><input type="range" id="af-a" min="-4" max="4" step="0.5" value="2"></label>
+      <label for="af-b">b <output id="o-afb">-3</output><input type="range" id="af-b" min="-6" max="6" step="1" value="-3"></label>
+    </div>
+    <div id="g-afim"></div>
+    <div class="readout" id="af-out"></div>
+  </div>
+  <h3>Modelando problemas</h3>
+  <div class="tbl"><table><thead><tr><th>Situação</th><th>Função</th><th>Pergunta típica</th></tr></thead><tbody>
+    <tr><td>App: R$ 5 fixos + R$ 2,50/km</td><td class="mono">C(x) = 2,5x + 5</td><td>12 km → R$ 35</td></tr>
+    <tr><td>Plano A: 40 + 0,50/min · Plano B: 20 + 0,90/min</td><td class="mono">40 + 0,5x &lt; 20 + 0,9x</td><td>A é mais barato para x &gt; 50 min (inequação)</td></tr>
+    <tr><td>Táxi, salário com comissão, conta de água</td><td class="mono">valor fixo + taxa · x</td><td>b = fixo, a = taxa</td></tr>
+  </tbody></table></div>
+  <div class="tip"><b>Inequação:</b> resolva como equação. Só inverta o sinal (&lt; vira &gt;) quando multiplicar ou dividir por número negativo.</div>
+</section>
+
+<section class="topic" id="m-quad">
+  <div class="eyebrow">Edital 2.5–2.6 · 3º bim aulas 9–24 · 4º bim aulas 1–8 e 13–16</div>
+  <h2>Função quadrática (2º grau)</h2>
+  <span class="fbig"><span>f(x) = a·x² + b·x + c &nbsp;(a ≠ 0)</span></span>
+  <div class="grid3">
+    <div class="card"><h4>Raízes (Bhaskara)</h4><span class="f">Δ = b² − 4ac</span><br><span class="f">x = (−b ± √Δ)/2a</span></div>
+    <div class="card"><h4>Vértice</h4><span class="f">x<sub>v</sub> = −b/2a</span><br><span class="f">y<sub>v</sub> = −Δ/4a</span></div>
+    <div class="card"><h4>Soma e produto</h4><span class="f">x₁ + x₂ = −b/a</span><br><span class="f">x₁ · x₂ = c/a</span></div>
+  </div>
+  <div class="tbl"><table><thead><tr><th>Sinal</th><th>O que acontece</th></tr></thead><tbody>
+    <tr><td><b>a &gt; 0</b></td><td>concavidade para cima (∪) → o vértice é ponto de <b>mínimo</b></td></tr>
+    <tr><td><b>a &lt; 0</b></td><td>concavidade para baixo (∩) → o vértice é ponto de <b>máximo</b></td></tr>
+    <tr><td><b>Δ &gt; 0</b></td><td>duas raízes reais diferentes (corta o eixo x em 2 pontos)</td></tr>
+    <tr><td><b>Δ = 0</b></td><td>uma raiz dupla (encosta no eixo x)</td></tr>
+    <tr><td><b>Δ &lt; 0</b></td><td>nenhuma raiz real (não toca o eixo x)</td></tr>
+    <tr><td><b>c</b></td><td>onde a parábola corta o eixo y</td></tr>
+  </tbody></table></div>
+  <div class="lab" id="lab-quad">
+    <h4>Laboratório: parábola</h4>
+    <div class="ctrls">
+      <label for="q-a">a <output id="o-qa">-1</output><input type="range" id="q-a" min="-3" max="3" step="0.5" value="-1"></label>
+      <label for="q-b">b <output id="o-qb">4</output><input type="range" id="q-b" min="-8" max="8" step="1" value="4"></label>
+      <label for="q-c">c <output id="o-qc">0</output><input type="range" id="q-c" min="-8" max="8" step="1" value="0"></label>
+    </div>
+    <div id="g-quad"></div>
+    <div class="readout" id="q-out"></div>
+  </div>
+  <h3>Problemas de máximo e mínimo</h3>
+  <ol class="steps">
+    <li>Monte a função (lucro, área, altura…).</li>
+    <li>Confira o sinal de a: negativo → tem máximo; positivo → tem mínimo.</li>
+    <li><b>x<sub>v</sub></b> responde “quando / quantos” (tempo, quantidade). <b>y<sub>v</sub></b> responde “qual o valor máximo/mínimo”.</li>
+  </ol>
+  <div class="tbl"><table><thead><tr><th>Problema</th><th>Conta</th><th>Resposta</th></tr></thead><tbody>
+    <tr><td>Bola: h(t) = −5t² + 20t</td><td class="mono">t<sub>v</sub> = −20/(−10) = 2 · h(2) = 20</td><td>altura máxima 20 m, aos 2 s</td></tr>
+    <tr><td>Lucro: L(x) = −x² + 40x − 300</td><td class="mono">x<sub>v</sub> = 20 · L(20) = 100</td><td>lucro máximo R$ 100 com 20 bolos</td></tr>
+    <tr><td>Cerca de 40 m, maior área retangular</td><td class="mono">A = x(20 − x) → x<sub>v</sub> = 10</td><td>quadrado 10 × 10, área 100 m²</td></tr>
+  </tbody></table></div>
+  <div class="tip"><b>Inequação do 2º grau:</b> ache as raízes e desenhe a parábola. Para a &gt; 0, f(x) &lt; 0 entre as raízes e f(x) &gt; 0 fora delas. Para a &lt; 0 é o contrário.</div>
+</section>
+
+<section class="topic" id="m-geo">
+  <div class="eyebrow">Edital 3 · sem aula própria no repositório da 1ª série</div>
+  <h2>Geometria plana</h2>
+  <p>O edital cobra, mas o repositório da 1ª série de 2026 só tem Pitágoras. Esta tabela fecha a lacuna.</p>
+  <div class="tbl"><table><thead><tr><th>Figura</th><th>Área</th><th>Observação</th></tr></thead><tbody>
+    <tr><td>Quadrado</td><td class="mono">ℓ²</td><td>perímetro 4ℓ</td></tr>
+    <tr><td>Retângulo</td><td class="mono">b · h</td><td></td></tr>
+    <tr><td>Paralelogramo</td><td class="mono">b · h</td><td>h é a altura, não o lado inclinado</td></tr>
+    <tr><td>Triângulo</td><td class="mono">b · h / 2</td><td>equilátero: ℓ²√3/4</td></tr>
+    <tr><td>Losango</td><td class="mono">D · d / 2</td><td>diagonais</td></tr>
+    <tr><td>Trapézio</td><td class="mono">(B + b) · h / 2</td><td></td></tr>
+    <tr><td>Círculo</td><td class="mono">π · r²</td><td>comprimento da circunferência 2πr</td></tr>
+    <tr><td>Coroa circular</td><td class="mono">π(R² − r²)</td><td>área entre dois círculos</td></tr>
+    <tr><td>Setor circular</td><td class="mono">(α/360°) · π r²</td><td>fatia de pizza de ângulo α</td></tr>
+    <tr><td>Hexágono regular</td><td class="mono">6 · ℓ²√3/4</td><td>6 triângulos equiláteros</td></tr>
+  </tbody></table></div>
+  <div class="grid2">
+    <div class="card"><h4>Coroa e setor</h4><div id="d-circ"></div><p class="cap">R = 3, r = 2: coroa = π(9 − 4) = 5π ≈ 15,7. Setor de 90° com r = 3: 9π/4 ≈ 7,07.</p></div>
+    <div class="card"><h4>Ângulos e polígonos</h4><div class="tbl" style="margin:0;border:0"><table><tbody>
+      <tr><td>Soma dos internos (n lados)</td><td class="mono">(n − 2)·180°</td></tr>
+      <tr><td>Cada interno (regular)</td><td class="mono">(n − 2)·180°/n</td></tr>
+      <tr><td>Soma dos externos</td><td class="mono">360°</td></tr>
+      <tr><td>Diagonais</td><td class="mono">n(n − 3)/2</td></tr>
+      <tr><td>Hexágono</td><td>720° no total, 120° cada</td></tr>
+      <tr><td>Ângulo inscrito</td><td>metade do central</td></tr>
+    </tbody></table></div></div>
+  </div>
+  <p><b>Áreas por reconfiguração</b>: recorte e encaixe pedaços para virar uma figura conhecida, ou some e subtraia áreas (ex.: quadrado menos 4 cantos de círculo).</p>
+</section>
+
+<section class="topic" id="m-info">
+  <div class="eyebrow">Edital 4 · sem aula própria no repositório da 1ª série</div>
+  <h2>Gráficos e tabelas</h2>
+  <div class="grid3">
+    <div class="card"><h4>Barras / colunas</h4><div id="c-bar"></div><p class="cap">Comparar categorias.</p></div>
+    <div class="card"><h4>Linhas</h4><div id="c-line"></div><p class="cap">Evolução no tempo.</p></div>
+    <div class="card"><h4>Setores (pizza)</h4><div id="c-pie"></div><p class="cap">Partes de um todo (soma 100% = 360°).</p></div>
+  </div>
+  <p class="cap">Dados ilustrativos, só para mostrar o formato.</p>
+  <div class="tbl"><table><thead><tr><th>Tipo</th><th>Use para</th><th>Pegadinha comum</th></tr></thead><tbody>
+    <tr><td>Setores</td><td>composição de um total</td><td>ângulo do setor = % · 3,6° (25% = 90°)</td></tr>
+    <tr><td>Histograma</td><td>dados agrupados em faixas (classes)</td><td>colunas encostadas; a largura é a classe</td></tr>
+    <tr><td>Ramo e folhas</td><td>listar dados mantendo os valores</td><td>“3 | 2 5 8” = 32, 35, 38</td></tr>
+    <tr><td>Infográfico</td><td>mistura texto, ícones e números</td><td>leia legenda e unidade antes de calcular</td></tr>
+    <tr><td>Eixo que não começa no zero</td><td>—</td><td>exagera diferenças pequenas</td></tr>
+  </tbody></table></div>
+  <p><b>Medidas que ajudam a ler tabelas</b>: média = soma ÷ quantidade; mediana = valor do meio com os dados em ordem; moda = valor que mais se repete.</p>
+</section>
+
+<section class="topic" id="m-si">
+  <div class="eyebrow">Edital 5</div>
+  <h2>Sistema Internacional de Unidades</h2>
+  <div class="grid2">
+    <div class="tbl" style="margin:0"><table><thead><tr><th>Grandeza</th><th>Unidade SI</th></tr></thead><tbody>
+      <tr><td>Comprimento</td><td>metro (m)</td></tr><tr><td>Massa</td><td>quilograma (kg)</td></tr><tr><td>Tempo</td><td>segundo (s)</td></tr><tr><td>Temperatura</td><td>kelvin (K)</td></tr><tr><td>Força</td><td>newton (N = kg·m/s²)</td></tr><tr><td>Energia / trabalho</td><td>joule (J = N·m)</td></tr><tr><td>Potência</td><td>watt (W = J/s)</td></tr>
+    </tbody></table></div>
+    <div class="tbl" style="margin:0"><table><thead><tr><th>Conversão</th><th>Valor</th></tr></thead><tbody>
+      <tr><td>km/h ↔ m/s</td><td>÷ 3,6 ou × 3,6</td></tr>
+      <tr><td>1 m³</td><td>1 000 L</td></tr><tr><td>1 dm³</td><td>1 L</td></tr><tr><td>1 cm³</td><td>1 mL</td></tr>
+      <tr><td>1 hectare</td><td>10 000 m² (100 m × 100 m)</td></tr>
+      <tr><td>1 m²</td><td>10 000 cm²</td></tr>
+      <tr><td>1 tonelada</td><td>1 000 kg</td></tr>
+    </tbody></table></div>
+  </div>
+  <div class="tbl"><table><thead><tr><th>Prefixo</th><th>giga (G)</th><th>mega (M)</th><th>quilo (k)</th><th>centi (c)</th><th>mili (m)</th><th>micro (μ)</th><th>nano (n)</th></tr></thead>
+  <tbody><tr><td><b>Fator</b></td><td>10⁹</td><td>10⁶</td><td>10³</td><td>10⁻²</td><td>10⁻³</td><td>10⁻⁶</td><td>10⁻⁹</td></tr></tbody></table></div>
+  <div class="tip"><b>Área e volume:</b> ao converter área, o fator vai ao quadrado (1 m = 100 cm → 1 m² = 10 000 cm²); volume, ao cubo (1 m³ = 1 000 000 cm³).</div>
+</section>
+</main>
+
+<footer>Feito a partir das aulas da 1ª série 2026 do repositório do Centro de Mídias SP e do Anexo VII do Edital nº 10 do Provão Paulista. Geometria plana, gráficos e porcentagem foram completados porque não têm aula própria no repositório.</footer>
+</div>
+
+<script>
+(function(){
+  const NS='http://www.w3.org/2000/svg';
+  function nice(v){return (Math.round(v*100)/100).toString().replace('.',',')}
+  function plot(id,o){
+    const W=o.w||340,H=o.h||230,pl=36,pr=12,pt=12,pb=30;
+    const sx=x=>pl+(x-o.x[0])/(o.x[1]-o.x[0])*(W-pl-pr);
+    const sy=y=>H-pb-(y-o.y[0])/(o.y[1]-o.y[0])*(H-pt-pb);
+    let s=`<svg class="plot" viewBox="0 0 ${W} ${H}" role="img" aria-label="${o.label||'gráfico'}">`;
+    const xs=o.xt||[], ys=o.yt||[];
+    xs.forEach(t=>{s+=`<line class="gl" x1="${sx(t)}" x2="${sx(t)}" y1="${pt}" y2="${H-pb}"/><text x="${sx(t)}" y="${H-pb+15}" text-anchor="middle">${nice(t)}</text>`});
+    ys.forEach(t=>{s+=`<line class="gl" x1="${pl}" x2="${W-pr}" y1="${sy(t)}" y2="${sy(t)}"/><text x="${pl-6}" y="${sy(t)+4}" text-anchor="end">${nice(t)}</text>`});
+    const y0=(o.y[0]<=0&&o.y[1]>=0)?0:o.y[0], x0=(o.x[0]<=0&&o.x[1]>=0)?0:o.x[0];
+    s+=`<line class="ax" x1="${pl}" x2="${W-pr}" y1="${sy(y0)}" y2="${sy(y0)}"/><line class="ax" x1="${sx(x0)}" x2="${sx(x0)}" y1="${pt}" y2="${H-pb}"/>`;
+    (o.areas||[]).forEach(a=>{let d=`M${sx(a.from)},${sy(0)}`;for(let i=0;i<=60;i++){const x=a.from+(a.to-a.from)*i/60;d+=` L${sx(x)},${sy(a.f(x))}`}d+=` L${sx(a.to)},${sy(0)} Z`;s+=`<path class="area" d="${d}"/>`});
+    (o.series||[]).forEach(se=>{let d='',pen=false;const n=240;for(let i=0;i<=n;i++){const x=(se.from??o.x[0])+((se.to??o.x[1])-(se.from??o.x[0]))*i/n;const y=se.f(x);if(!isFinite(y)||y<o.y[0]-0.001||y>o.y[1]+0.001){pen=false;continue}d+=(pen?' L':' M')+sx(x).toFixed(1)+','+sy(y).toFixed(1);pen=true}s+=`<path class="${se.cls||'s1'}" d="${d}"/>`});
+    (o.pts||[]).forEach(p=>{if(p[0]<o.x[0]||p[0]>o.x[1]||p[1]<o.y[0]||p[1]>o.y[1])return;s+=`<circle class="${p[3]||'pt'}" cx="${sx(p[0])}" cy="${sy(p[1])}" r="5"/>`;if(p[2])s+=`<text class="lbl" x="${Math.min(sx(p[0])+8,W-pr-4)}" y="${sy(p[1])-8}" text-anchor="${sx(p[0])>W-90?'end':'start'}">${p[2]}</text>`});
+    if(o.xl)s+=`<text class="lbl" x="${W-pr}" y="${sy(y0)-6}" text-anchor="end">${o.xl}</text>`;
+    if(o.yl)s+=`<text class="lbl" x="${sx(x0)+6}" y="${pt+10}">${o.yl}</text>`;
+    s+='</svg>';document.getElementById(id).innerHTML=s;
+  }
+  const r=(a,b,st)=>{const o=[];for(let v=a;v<=b+1e-9;v+=st)o.push(Math.round(v*100)/100);return o};
+
+  /* Física estáticos */
+  plot('g-mu',{x:[0,6],y:[0,45],xt:r(0,6,1),yt:r(0,40,10),series:[{f:t=>10+5*t}],pts:[[0,10,'S₀ = 10'],[4,30,'t = 4 s → 30 m']],xl:'t (s)',yl:'S (m)',label:'Gráfico posição por tempo do MU'});
+  plot('g-area',{x:[0,5],y:[0,14],xt:r(0,5,1),yt:r(0,12,2),areas:[{from:0,to:4,f:t=>2+2*t}],series:[{f:t=>2+2*t}],pts:[[4,10,'v = 10']],xl:'t (s)',yl:'v (m/s)',label:'Área sob o gráfico velocidade por tempo'});
+  plot('g-mola',{x:[0,0.6],y:[0,500],xt:[0,0.1,0.2,0.3,0.4,0.5],yt:r(0,500,100),areas:[{from:0,to:0.5,f:x=>800*x}],series:[{f:x=>800*x}],pts:[[0.5,400,'400 N']],xl:'x (m)',yl:'F (N)',label:'Força elástica por deformação'});
+  plot('g-inv2',{x:[0.8,4.2],y:[0,1.1],xt:[1,2,3,4],yt:[0,0.25,0.5,0.75,1],series:[{f:d=>1/(d*d)}],pts:[[1,1,'F'],[2,0.25,'F/4'],[3,1/9,'F/9']],xl:'d (× d₀)',yl:'F',label:'Força gravitacional em função da distância'});
+  plot('g-prop',{x:[0,6.5],y:[0,13],xt:r(0,6,1),yt:r(0,12,2),series:[{f:x=>2*x},{f:x=>12/x,from:0.9,cls:'s2'}],pts:[[3,6,''],[2,6,'','pt2'],[4,3,'','pt2'],[6,2,'','pt2']],label:'Grandezas direta e inversamente proporcionais'});
+
+  // vetores
+  (function(){const W=340,H=200;const o=[40,160];const a=[200,160],b=[40,50],c=[200,50];
+    const arrow=(p,q,cls,lab,lx,ly)=>`<line class="${cls}" x1="${p[0]}" y1="${p[1]}" x2="${q[0]}" y2="${q[1]}" marker-end="url(#ah-${cls})"/><text class="lbl" x="${lx}" y="${ly}">${lab}</text>`;
+    document.getElementById('g-vet').innerHTML=`<svg class="plot" viewBox="0 0 ${W} ${H}" role="img" aria-label="Regra do paralelogramo"><defs>${['s1','s2','s3'].map(k=>`<marker id="ah-${k}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 Z" class="${k}" style="fill:currentColor"/></marker>`).join('')}</defs>
+    <line class="gl" x1="${a[0]}" y1="${a[1]}" x2="${c[0]}" y2="${c[1]}"/><line class="gl" x1="${b[0]}" y1="${b[1]}" x2="${c[0]}" y2="${c[1]}"/>
+    ${arrow(o,a,'s1','F₁ = 8 N',110,180)}${arrow(o,b,'s2','F₂ = 6 N',48,44)}${arrow(o,c,'s3','R = 10 N',125,98)}
+    <text x="230" y="120">perpendiculares:</text><text x="230" y="138">R = √(8² + 6²)</text></svg>`;
+    document.querySelectorAll('#g-vet marker path').forEach(p=>{p.style.fill=getComputedStyle(p).stroke})})();
+
+  // plano inclinado
+  document.getElementById('d-plano').innerHTML=`<svg class="plot" viewBox="0 0 340 210" role="img" aria-label="Forças no plano inclinado">
+   <polygon points="20,190 320,190 320,40" style="fill:var(--chip);stroke:var(--muted);stroke-width:1.5"/>
+   <path d="M 70,190 A 50 50 0 0 0 64.7,167.6" class="s3"/><text class="lbl" x="78" y="184">θ</text>
+   <g transform="translate(205,97.5) rotate(-26.6)"><rect x="-24" y="-30" width="48" height="30" style="fill:var(--paper);stroke:var(--ink);stroke-width:1.5"/></g>
+   <line class="s2" x1="198" y1="84" x2="198" y2="154"/><text class="lbl" x="186" y="172">P</text>
+   <line class="s1" x1="198" y1="84" x2="171" y2="30"/><text class="lbl" x="150" y="26">N</text>
+   <line class="s3" x1="198" y1="84" x2="167" y2="100"/><text class="lbl" x="70" y="104">Px = P·sen θ</text>
+   <line class="s3" x1="198" y1="84" x2="226" y2="140"/><text class="lbl" x="232" y="146">Py = P·cos θ</text></svg>`;
+
+  // Kepler
+  document.getElementById('d-kepler').innerHTML=`<svg class="plot" viewBox="0 0 340 210" role="img" aria-label="Órbita elíptica com áreas iguais">
+   <ellipse cx="170" cy="105" rx="140" ry="80" style="fill:none;stroke:var(--muted);stroke-width:1.5"/>
+   <path d="M 95,105 L 30,105 A 140 80 0 0 1 38.5,77 Z" class="area"/>
+   <path d="M 95,105 L 296,140 A 140 80 0 0 1 256,168 Z" class="area" style="fill:var(--warn)"/>
+   <circle cx="95" cy="105" r="11" style="fill:var(--mark);stroke:var(--warn);stroke-width:2"/><text class="lbl" x="88" y="130">Sol (foco)</text>
+   <circle cx="245" cy="105" r="3" style="fill:var(--muted)"/><text x="232" y="98">foco</text>
+   <circle cx="30" cy="105" r="5" class="pt"/><text class="lbl" x="10" y="94">periélio</text>
+   <circle cx="310" cy="105" r="5" class="pt"/><text class="lbl" x="286" y="94">afélio</text></svg>`;
+
+  // conjuntos
+  document.getElementById('d-conj').innerHTML=`<svg class="plot" viewBox="0 0 340 220" role="img" aria-label="Diagrama dos conjuntos numéricos">
+   <rect x="6" y="6" width="328" height="208" rx="14" style="fill:var(--chip);stroke:var(--muted)"/><text class="lbl" x="18" y="28">ℝ</text>
+   <rect x="22" y="38" width="210" height="166" rx="12" style="fill:var(--paper);stroke:var(--acc);stroke-width:1.5"/><text class="lbl" x="34" y="58">ℚ  1/2 · 0,333… · −4,7</text>
+   <rect x="40" y="70" width="172" height="124" rx="10" style="fill:var(--chip);stroke:var(--acc)"/><text class="lbl" x="52" y="90">ℤ  −3 · −1</text>
+   <rect x="58" y="102" width="136" height="80" rx="8" style="fill:var(--paper);stroke:var(--acc)"/><text class="lbl" x="70" y="124">ℕ</text><text x="70" y="146">0 · 1 · 2 · 15</text>
+   <rect x="244" y="38" width="80" height="166" rx="12" style="fill:var(--paper);stroke:var(--warn);stroke-width:1.5"/><text class="lbl" x="256" y="58">𝕀</text><text x="256" y="90">√2</text><text x="256" y="114">π</text><text x="256" y="138">√3</text><text x="256" y="162">φ</text></svg>`;
+
+  // Pitágoras
+  document.getElementById('d-pit').innerHTML=`<svg class="plot" viewBox="0 0 340 190" role="img" aria-label="Triângulo retângulo 3, 4, 5">
+   <polygon points="60,160 220,160 60,40" style="fill:var(--chip);stroke:var(--ink);stroke-width:2"/>
+   <rect x="60" y="148" width="12" height="12" style="fill:none;stroke:var(--ink)"/>
+   <text class="lbl" x="130" y="180">c = 4 (cateto)</text><text class="lbl" x="6" y="104">b = 3</text><text class="lbl" x="150" y="92">a = 5 (hipotenusa)</text>
+   <text x="232" y="60">9 + 16 = 25</text><text x="232" y="80">√25 = 5</text></svg>`;
+
+  // círculos
+  document.getElementById('d-circ').innerHTML=`<svg class="plot" viewBox="0 0 340 180" role="img" aria-label="Coroa circular e setor">
+   <circle cx="90" cy="90" r="75" style="fill:var(--acc);fill-opacity:.2;stroke:var(--acc)"/><circle cx="90" cy="90" r="50" style="fill:var(--paper);stroke:var(--acc)"/>
+   <text class="lbl" x="66" y="94">coroa</text>
+   <path d="M 250,90 L 325,90 A 75 75 0 0 0 250,15 Z" style="fill:var(--warn);fill-opacity:.3;stroke:var(--warn)"/><circle cx="250" cy="90" r="75" style="fill:none;stroke:var(--muted);stroke-dasharray:4 4"/>
+   <text class="lbl" x="262" y="76">setor 90°</text></svg>`;
+
+  // mini charts (dados ilustrativos)
+  (function(){const d=[['A',12],['B',7],['C',15],['D',9]];let s='<svg class="plot" viewBox="0 0 200 130" role="img" aria-label="Exemplo de gráfico de barras">';d.forEach((v,i)=>{const h=v[1]*6;s+=`<rect x="${20+i*45}" y="${110-h}" width="30" height="${h}" rx="3" style="fill:var(--acc)"/><text x="${35+i*45}" y="124" text-anchor="middle">${v[0]}</text><text class="lbl" x="${35+i*45}" y="${105-h}" text-anchor="middle">${v[1]}</text>`});s+='<line class="ax" x1="10" x2="195" y1="110" y2="110"/></svg>';document.getElementById('c-bar').innerHTML=s})();
+  plot('c-line',{w:200,h:130,x:[2020,2025],y:[0,40],xt:[2020,2022,2024],yt:[0,20,40],series:[{f:x=>{const d=[10,14,13,22,27,33],i=Math.min(4,Math.floor(x-2020)),t=x-2020-i;return d[i]+(d[i+1]-d[i])*t}}],label:'Exemplo de gráfico de linhas'});
+  (function(){const d=[[50,'var(--acc)'],[25,'var(--warn)'],[15,'var(--mat)'],[10,'var(--muted)']];let a=-Math.PI/2,s='<svg class="plot" viewBox="0 0 200 130" role="img" aria-label="Exemplo de gráfico de setores">';const cx=65,cy=65,R=55;d.forEach(([p,c])=>{const b=a+p/100*2*Math.PI;const x1=cx+R*Math.cos(a),y1=cy+R*Math.sin(a),x2=cx+R*Math.cos(b),y2=cy+R*Math.sin(b);s+=`<path d="M${cx},${cy} L${x1},${y1} A${R},${R} 0 ${p>50?1:0} 1 ${x2},${y2} Z" style="fill:${c};stroke:var(--paper);stroke-width:2"/>`;a=b});s+=`<text class="lbl" x="135" y="40">50% = 180°</text><text class="lbl" x="135" y="62">25% = 90°</text><text class="lbl" x="135" y="84">15% = 54°</text><text class="lbl" x="135" y="106">10% = 36°</text></svg>`;document.getElementById('c-pie').innerHTML=s})();
+
+  /* Laboratórios */
+  function muv(){const v0=+document.getElementById('muv-v0').value,a=+document.getElementById('muv-a').value;
+    document.getElementById('o-v0').textContent=v0;document.getElementById('o-a').textContent=nice(a);
+    const S=t=>v0*t+a*t*t/2,V=t=>v0+a*t;let mn=0,mx=0;for(let t=0;t<=10;t+=0.1){mn=Math.min(mn,S(t));mx=Math.max(mx,S(t))}
+    const span=Math.max(10,mx-mn),st=Math.pow(10,Math.floor(Math.log10(span/4)));const step=span/st>20?st*5:span/st>8?st*2:st;
+    const yl=Math.floor(mn/step)*step,yh=Math.ceil(mx/step)*step||step;
+    const pts=[];if(a!==0){const tp=-v0/a;if(tp>0&&tp<10)pts.push([tp,S(tp),'inverte'])}
+    plot('g-muv-s',{x:[0,10],y:[yl,yh],xt:r(0,10,2),yt:r(yl,yh,step),series:[{f:S}],pts,xl:'t (s)',yl:'S (m)',label:'Posição no MUV'});
+    const vmn=Math.min(V(0),V(10),0),vmx=Math.max(V(0),V(10),0);const vs=Math.max(5,Math.ceil((vmx-vmn)/5/5)*5);
+    plot('g-muv-v',{x:[0,10],y:[Math.floor(vmn/vs)*vs,Math.ceil(vmx/vs)*vs||vs],xt:r(0,10,2),yt:r(Math.floor(vmn/vs)*vs,Math.ceil(vmx/vs)*vs||vs,vs),series:[{f:V,cls:'s2'}],xl:'t (s)',yl:'v (m/s)',label:'Velocidade no MUV'});
+    let txt=`<span>v(5) = ${nice(V(5))} m/s</span><span>S(5) = ${nice(S(5))} m</span><span>S(10) = ${nice(S(10))} m</span>`;
+    if(a===0)txt+='<span>a = 0: é MU</span>';else if(v0*a<0)txt+='<span>retardado no início (v e a com sinais opostos)</span>';else txt+='<span>acelerado (v e a com mesmo sinal)</span>';
+    document.getElementById('muv-out').innerHTML=txt}
+  ['muv-v0','muv-a'].forEach(id=>document.getElementById(id).addEventListener('input',muv));muv();
+
+  function en(){const h=+document.getElementById('en-h').value,m=2,g=10,H=20,Ep=m*g*h,Em=m*g*H,Ec=Em-Ep,v=Math.sqrt(2*g*(H-h));
+    document.getElementById('o-h').textContent=h;
+    [['ep',Ep],['ec',Ec],['em',Em]].forEach(([k,val])=>{document.getElementById('i-'+k).style.height=(val/Em*100)+'%';document.getElementById('b-'+k).textContent=val+' J'});
+    document.getElementById('en-out').innerHTML=`<span>v = ${nice(v)} m/s</span><span>${h===0?'chegou ao chão: v = √(2·10·20) = 20 m/s':'Ep + Ec = 400 J sempre'}</span>`}
+  document.getElementById('en-h').addEventListener('input',en);en();
+
+  function afim(){const a=+document.getElementById('af-a').value,b=+document.getElementById('af-b').value;
+    document.getElementById('o-afa').textContent=nice(a);document.getElementById('o-afb').textContent=b;
+    const pts=[[0,b,'(0, '+b+')']];let root='—';if(a!==0){const x=-b/a;root=nice(x);pts.push([x,0,'raiz x = '+nice(x),'pt2'])}
+    plot('g-afim',{w:420,h:260,x:[-6,6],y:[-10,10],xt:r(-6,6,2),yt:r(-10,10,5),series:[{f:x=>a*x+b}],pts,xl:'x',yl:'y',label:'Gráfico da função afim'});
+    document.getElementById('af-out').innerHTML=`<span>f(x) = ${nice(a)}x ${b<0?'− '+(-b):'+ '+b}</span><span>${a>0?'crescente':a<0?'decrescente':'constante'}</span><span>raiz: ${root}</span><span>f(2) = ${nice(2*a+b)}</span>`}
+  ['af-a','af-b'].forEach(id=>document.getElementById(id).addEventListener('input',afim));afim();
+
+  function quad(){let a=+document.getElementById('q-a').value;const b=+document.getElementById('q-b').value,c=+document.getElementById('q-c').value;
+    if(a===0){a=0.5;document.getElementById('q-a').value=0.5}
+    document.getElementById('o-qa').textContent=nice(a);document.getElementById('o-qb').textContent=b;document.getElementById('o-qc').textContent=c;
+    const D=b*b-4*a*c,xv=-b/(2*a),yv=-D/(4*a);const pts=[[xv,yv,'V('+nice(xv)+'; '+nice(yv)+')']];let rt='nenhuma raiz real';
+    if(D>0){const x1=(-b-Math.sqrt(D))/(2*a),x2=(-b+Math.sqrt(D))/(2*a);pts.push([x1,0,'','pt2'],[x2,0,'','pt2']);rt='raízes '+nice(Math.min(x1,x2))+' e '+nice(Math.max(x1,x2))}
+    else if(D===0){rt='raiz dupla '+nice(xv)}
+    plot('g-quad',{w:420,h:280,x:[-8,8],y:[-12,12],xt:r(-8,8,2),yt:r(-12,12,4),series:[{f:x=>a*x*x+b*x+c}],pts,xl:'x',yl:'y',label:'Parábola'});
+    document.getElementById('q-out').innerHTML=`<span>Δ = ${nice(D)}</span><span>${rt}</span><span>${a>0?'∪ ponto de mínimo':'∩ ponto de máximo'} y = ${nice(yv)}</span><span>corta o eixo y em ${c}</span>`}
+  ['q-a','q-b','q-c'].forEach(id=>document.getElementById(id).addEventListener('input',quad));quad();
+
+  /* Abas */
+  const tabs=[...document.querySelectorAll('.tab')];
+  function show(name,push){tabs.forEach(t=>{const on=t.getAttribute('aria-controls')===name;t.setAttribute('aria-selected',on);document.getElementById(t.getAttribute('aria-controls')).hidden=!on});
+    document.documentElement.style.setProperty('--acc',name==='fisica'?'var(--fis)':'var(--mat)');
+    muv();en();afim();quad();
+    if(push){try{history.replaceState(null,'','#'+name)}catch(e){}}}
+  tabs.forEach(t=>t.addEventListener('click',()=>show(t.getAttribute('aria-controls'),true)));
+  function fromHash(){const h=(location.hash||'').slice(1);if(h==='matematica'||h.startsWith('m-'))show('matematica');else if(h==='fisica'||h.startsWith('f-'))show('fisica');}
+  window.addEventListener('hashchange',fromHash);fromHash();
+})();
+</script>
+</body>
+</html>
